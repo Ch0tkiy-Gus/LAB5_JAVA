@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.net.URLConnection;
 
 public class Task4TagFrequency {
     public static void main(String[] args) {
@@ -18,7 +20,9 @@ public class Task4TagFrequency {
 
         try {
             URL url = new URL(urlString);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            URLConnection connection = url.openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             
             String html = "";
             String line;
@@ -40,9 +44,9 @@ public class Task4TagFrequency {
                 }
             }
 
-            List> list = new ArrayList<>(tags.entrySet());
+            List<Map.Entry<String, Integer>> list = new ArrayList<>(tags.entrySet());
 
-            list.sort(new Comparator>() {
+            list.sort(new Comparator<Map.Entry<String, Integer>>() {
                 public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
                     int countDiff = a.getValue().compareTo(b.getValue());
                     if (countDiff != 0) {
@@ -57,7 +61,7 @@ public class Task4TagFrequency {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }
 
-            list.sort(new Comparator>() {
+            list.sort(new Comparator<Map.Entry<String, Integer>>() {
                 public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
                     return a.getKey().compareTo(b.getKey());
                 }
